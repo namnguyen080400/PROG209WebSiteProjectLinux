@@ -9,56 +9,53 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/index.css">
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-
-
     <script src="javascripts/index.js"></script>
 </head>
 <body>
-<!--------------------------------------------------------------------------------->
-<!-- Home Page -->
-<div data-role="page" id="home">
+ <!-- Home Page -->
+ <div data-role="page" id="home">
     <div data-role="header" data-theme="a">
         <h1>Home Page</h1>
         <div data-role="navbar" data-iconpos="left">
             <ul>
                 <li><a href="#home" data-icon="home">Home</a></li>
-                <li><a href="#data" data-icon="plus">information</a></li>
+                <li><a href="#data" data-icon="plus">Information</a></li>
                 <li><a href="#display" data-icon="grid">Display</a></li>
-                <li><a href="#avatar" data-icon="star">Avatar Contacts</a></li>
+                <!-- <li><a href="#contact" data-icon="star">Contact</a></li> -->
             </ul>
         </div>
     </div>
     <div data-role="content">
-        <h2>Your Contact List </h2>
-        <p>This app will help you to keep track of your contact information</p>
+        <h2>Your Contact List</h2>
+        <p>This app will help you keep track of your contact information</p>
     </div>
     <div data-role="footer" data-theme="a">
-        <h4>Copy right </h4>
+        <h4>© My App</h4>
     </div>
 </div>
-<!--------------------------------------------------------------------------------->
-<!-- information Page -->
+
+<!-- Information Page -->
 <div data-role="page" id="data">
     <div data-role="header" data-theme="a">
-        <h1>information Page</h1>
+        <h1>Information Page</h1>
         <div data-role="navbar" data-iconpos="left">
             <ul>
                 <li><a href="#home" data-icon="home">Home</a></li>
-                <li><a href="#data" data-icon="plus">information</a></li>
+                <li><a href="#data" data-icon="plus">Information</a></li>
                 <li><a href="#display" data-icon="grid">Display</a></li>
-                <li><a href="#avatar" data-icon="star">Avatar Contacts</a></li>
+                <!-- <li><a href="#contact" data-icon="star">Contact</a></li> -->
             </ul>
         </div>
     </div>
     <div data-role="content">
-        <h2>information</h2>
+        <h2>Information</h2>
         <form id="data-form">
             <div data-role="fieldcontain">
                 <label for="name">Name:</label>
                 <input type="text" name="name" id="name" required>
             </div>
             <div data-role="fieldcontain">
-                <label for="email">email:</label>
+                <label for="email">Email:</label>
                 <input type="email" name="email" id="email" required>
             </div>
             <div data-role="fieldcontain">
@@ -67,18 +64,23 @@
             </div>
             <div data-role="fieldcontain">
                 <label for="Photo_URL">Photo URL:</label>
-                <input type="text" name="Photo_URL" id="Photo_URL" placeholder="put photo url in here">
+                <input type="text" name="Photo_URL" id="Photo_URL" placeholder="Put photo URL here">
             </div>
-            <button id="submitContact">Submit</button>
+            <div class="type_contact">
+                <label for="select_type">Select a Type:</label>
+                <select name="select_type" id="select_type">
+                    <option value="Family">Family</option>
+                    <option value="Friend">Friend</option>
+                </select>
+            </div>
+            <button id="submitContact">Submit(save)</button>
         </form>
-       
     </div>
-    
     <div data-role="footer" data-theme="a">
-        <h4>Copy right </h4>
+        <h4>© My App</h4>
     </div>
 </div>
-<!--------------------------------------------------------------------------------->
+
 <!-- Display Page -->
 <div data-role="page" id="display">
     <div data-role="header" data-theme="a">
@@ -86,56 +88,55 @@
         <div data-role="navbar" data-iconpos="left">
             <ul>
                 <li><a href="#home" data-icon="home">Home</a></li>
-                <li><a href="#data" data-icon="plus">information</a></li>
+                <li><a href="#data" data-icon="plus">Information</a></li>
                 <li><a href="#display" data-icon="grid">Display</a></li>
-               <li><a href="#avatar" data-icon="star">Avatar Contacts</a></li>
+                <!-- <li><a href="#contact" data-icon="star">Contact</a></li> -->
             </ul>
         </div>
     </div>
-    <h2>Here are Your contact  Notes</h2>
-    <br><br>
-    <div data-role="page" id="show">
- 
+    <div data-role="content">
+        <h2>Here are Your Contact Notes</h2>
+        <br><br>
+        <div id="contactInfo"></div>
+        <input type="button" value="List Friend" id="friend" data-inline="true" />
+        <input type="button" value="List Family" id="family" data-inline="true" />
+      
+        <div data-role="content" data-theme="a">
+            <ul id="myul" data-role="listview"></ul>
+        </div>
+        <!-- Notes Footer -->
+        <div data-role="footer" data-theme="a">
+            <h3>© My App</h3>
+        </div>
     </div>
-
-    <!-- content -->
-    <div data-role="content" data-theme='a'>
-        <ul id="myul" data-role="listview"></ul>  
-    </div>
-    
-    
-    <!-- notes footer --> 
-    <div data-role="footer" data-theme='a'>
-        <h3>copy right </h3>
-    </div>
-  
 </div>
-<!-- Avatar Page -->
-<div data-role="page" id="avatar">
+
+<!--save-->
+<div data-role="page" id="contact">
     <div data-role="header" data-theme="a">
-        <h1>Person Avatar List</h1>
+        <h1>Contact Page</h1>
         <div data-role="navbar" data-iconpos="left">
             <ul>
                 <li><a href="#home" data-icon="home">Home</a></li>
                 <li><a href="#data" data-icon="plus">Information</a></li>
                 <li><a href="#display" data-icon="grid">Display</a></li>
-                <li><a href="#avatar" data-icon="star">Avatar Contacts</a></li>
+                <li><a href="#contact" data-icon="star">Contact</a></li>
             </ul>
         </div>
     </div>
-    <h2>Here are Your person contacts</h2>
-
-    <button id="showByNameButton" data-inline="true">Sort by Name</button>
-    <ul id="content1" data-role="listview"></ul>  
-    <div id="contactInfo"></div>
-
-    
-
-    <div data-role="footer" data-theme='a'>
-        <h3>Copy right</h3>
+    <div data-role="content">
+        <h2>Here are Your Saved Contacts</h2>
+        <ul id="myul" data-role="listview"></ul>
+        <div id="friendSavedInfo"></div>
+        <div id="familySavedInfo"></div>
+    </div>
+    <div data-role="content" data-theme="a">
+        <ul id="saveUL" data-role="listview"></ul>
+    </div>
+    <div data-role="footer" data-theme="a">
+        <h4>© My App</h4>
     </div>
 </div>
+
 </body>
-
-
 </html>

@@ -1,19 +1,21 @@
 let contactArray = [];
 
-let  ContactObject = function (pName, pEmail, pPhoneNumber, pPhoto_URL) {
+let ContactObject = function (pName, pEmail, pPhoneNumber, pPhoto_URL, pType) {
     this.name = pName;
     this.email = pEmail;
     this.phoneNumber = pPhoneNumber;
-    this.Photo_URL = pPhoto_URL;
+    this.photoURL = pPhoto_URL;
+    this.type = pType;
     this.ID = Math.random().toString(16).slice(5);
+};
+
+
+if (localStorage.getItem("contacts")) {
+    contactArray = JSON.parse(localStorage.getItem("contacts"));
 }
 
-// code runs immediately
-//================================================================
-
-// runs when DOM is loaded
+// Runs when DOM is loaded
 document.addEventListener("DOMContentLoaded", function (event) {
-
     createList();
 
     document.getElementById("submitContact").addEventListener("click", function () {
@@ -21,7 +23,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
             document.getElementById("name").value,
             document.getElementById("email").value,
             document.getElementById("phone").value,
-            document.getElementById("Photo_URL").value
+            document.getElementById("Photo_URL").value,
+            document.getElementById("select_type").value
         );
         contactArray.push(contact);
 
@@ -31,75 +34,196 @@ document.addEventListener("DOMContentLoaded", function (event) {
         document.getElementById("Photo_URL").value = "";
 
         createList();
-        document.location.href = "index.html#display";
+        document.location.href = "#display";
+
+      
+        localStorage.setItem("contacts", JSON.stringify(contactArray));
     });
 
     $(document).on("pagebeforeshow", "#display", function (event) {
         createList();
     });
+//     $(document).on("click", "#saveUL a", function () {
+//     var contactId = $(this).data("contactId");
+//     var contact = contactArray.find(function (contact) {
+//       return contact.ID === contactId;
+//     });
+//     displayContactInfo(contact);
+//   });
 
-    document.getElementById("showByNameButton").addEventListener("click", function() {
-      displayContactsByName();
+
+
+
+    document.getElementById("friend").addEventListener("click", function () {
+        displayContactsByType("Friend");
     });
 
+    document.getElementById("family").addEventListener("click", function () {
+        displayContactsByType("Family");
+    });
+
+    $(document).on("pagebeforeshow", "#contact", function (event) {
+        displaySavedContacts();
+    });
+
+    $(document).on("click", ".delete-button", function () {
+        var contactId = $(this).data("contactId");
+        deleteContact(contactId);
+    });
 });
 
-//======================================
-// function definitions
 function createList() {
-    // clear prior data
     var myul = document.getElementById("myul");
     myul.innerHTML = "";
-      count = 1;   
-    contactArray.forEach(function (element) {   // use handy array forEach method
-        var li = document.createElement('li');
-        // added data-role="listview" to the ul in the html
-        li.innerHTML = "ID: " + element.ID + "<b> Name: </b>" + element.name + " <b> Email: </b>" + element.email + "<b> Phone Number: </b>" + element.phoneNumber;
-      count++;
+
+    contactArray.forEach(function (element) {
+        var li = document.createElement("li");
+        var link = document.createElement("a");
+        link.innerText = element.name;
+        link.href = "#contact";
+        link.dataset.contactId = element.ID;
+        link.addEventListener("click", function () {
+            displayContactInfo(element);
+        });
+
+        li.appendChild(link);
         myul.appendChild(li);
     });
-};
+ 
+}
+
+
+
+
 
 function displayContactInfo(contact) {
-  var INFOR = document.getElementById("contactInfo");
-  INFOR.innerHTML = "";
+    var contactInfo = document.getElementById("contactInfo");
+    contactInfo.innerHTML = "";
 
-  var NAME1 = document.createElement('h3');
-  NAME1.innerText = "Name: " + contact.name;
+    var nameHeading = document.createElement("h3");
+    nameHeading.innerText = contact.name;
+    contactInfo.appendChild(nameHeading);
 
-  var EMAILL1 = document.createElement('p');
-  EMAILL1.innerText = "Email: " + contact.email;
+    var emailPara = document.createElement("p");
+    emailPara.innerText = "Email: " + contact.email;
+    contactInfo.appendChild(emailPara);
 
-  var PHONE1 = document.createElement('p');
-  PHONE1.innerText = "Phone Number: " + contact.phoneNumber;
+    var phonePara = document.createElement("p");
+    phonePara.innerText = "Phone: " + contact.phoneNumber;
+    contactInfo.appendChild(phonePara);
 
-  var PHOTOIMG = document.createElement("button");
-  PHOTOIMG.appendChild(document.createTextNode(contact.name + "'s Avatar"));
-  PHOTOIMG.addEventListener("click", function() {
-    window.open(contact.Photo_URL);
-  });
-  INFOR.appendChild(NAME1);
-  INFOR.appendChild(EMAILL1);
-  INFOR.appendChild(PHONE1);
-  INFOR.appendChild(PHOTOIMG);
+    var photoImg = document.createElement("img");
+    photoImg.src = contact.photoURL;
+    photoImg.alt = contact.name + "'s photo";
+    contactInfo.appendChild(photoImg);
 
-
+    var typePara = document.createElement("p");
+    typePara.innerText = "Type: " + contact.type;
+    contactInfo.appendChild(typePara);
 }
-function displayContactsByName() {
-  var content1 = document.getElementById("content1");
-  content1.innerHTML = "";
-  let sortedByNameArray = contactArray.sort(
-    (p1, p2) => (p1.name.localeCompare(p2.name))
-  );
-  sortedByNameArray.forEach(function(element) {
-      var li = document.createElement('li');
-      var link = document.createElement('a');
-      link.innerText = element.name;
-      link.href = "javascript:void(0)";
-      link.addEventListener("click", function() {
-          displayContactInfo(element);
-      });
-      li.appendChild(link);
-      content1.appendChild(li);
-  });
+
+function displayContactsByType(type) {
+    var filteredContacts = contactArray.filter(function (contact) {
+        return contact.type === type;
+    });
+
+    var myul = document.getElementById("myul");
+    myul.innerHTML = "";
+
+    filteredContacts.forEach(function (element) {
+        var li = document.createElement("li");
+        var link = document.createElement("a");
+        link.innerText = element.name;
+        link.href = "#contact";
+        link.dataset.contactId = element.ID;
+        link.addEventListener("click", function () {
+            displayContactInfo(element);
+        });
+
+        li.appendChild(link);
+        myul.appendChild(li);
+    });
+}
+
+// function displaySavedContacts() {
+//     var saveUL = document.getElementById("saveUL");
+//     saveUL.innerHTML = "";
+  
+//     contactArray.forEach(function (contact) {
+//       var li = document.createElement("li");
+//       var link = document.createElement("a");
+//       link.innerText = contact.name;
+//       link.href = "#contact";
+//       link.dataset.contactId = contact.ID;
+//       link.addEventListener("click", function () {
+//         displayContactInfo(contact);
+//       });
+  
+//       li.appendChild(link);
+//       saveUL.appendChild(li);
+//     });
+//   }
+
+// ul link can jump to page4 
+function displaySavedContacts() {
+
+   
+  
+   
+    var friendSavedInfo = document.getElementById("friendSavedInfo");
+    friendSavedInfo.innerHTML = "";
+
+    var familySavedInfo = document.getElementById("familySavedInfo");
+    familySavedInfo.innerHTML = "";
+  
+
+    contactArray.forEach(function (contact) {
+        var contactInfo = document.createElement("div");
+        contactInfo.classList.add("saved-contact-info");
+
+        var nameHeading = document.createElement("h3");
+        nameHeading.innerText = contact.name;
+        contactInfo.appendChild(nameHeading);
+
+        var emailPara = document.createElement("p");
+        emailPara.innerText = "Email: " + contact.email;
+        contactInfo.appendChild(emailPara);
+
+        var phonePara = document.createElement("p");
+        phonePara.innerText = "Phone: " + contact.phoneNumber;
+        contactInfo.appendChild(phonePara);
+
+        var photoImg = document.createElement("img");
+        photoImg.src = contact.photoURL;
+        photoImg.alt = contact.name + "'s photo";
+        contactInfo.appendChild(photoImg);
+
+        var typePara = document.createElement("p");
+        typePara.innerText = "Type: " + contact.type;
+        contactInfo.appendChild(typePara);
+
+        var deleteButton = document.createElement("button");
+        deleteButton.innerText = "Delete";
+        deleteButton.classList.add("delete-button");
+        deleteButton.dataset.contactId = contact.ID;
+        contactInfo.appendChild(deleteButton);
+
+        if (contact.type === "Friend") {
+            friendSavedInfo.appendChild(contactInfo);
+        } else if (contact.type === "Family") {
+            familySavedInfo.appendChild(contactInfo);
+        }
+    });
+}
+// page4 able to delete the infor after refreshing or closing 
+function deleteContact(contactId) {
+    contactArray = contactArray.filter(function (contact) {
+        return contact.ID !== contactId;
+    });
+
+    createList();
+    displaySavedContacts();
+
+  
+    localStorage.setItem("contacts", JSON.stringify(contactArray));
 }
