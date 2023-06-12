@@ -10,9 +10,9 @@ let ContactObject = function (pName, pEmail, pPhoneNumber, pPhoto_URL, pType) {
 };
 
 
-if (localStorage.getItem("contacts")) {
-    contactArray = JSON.parse(localStorage.getItem("contacts"));
-}
+// if (localStorage.getItem("contacts")) {
+//     contactArray = JSON.parse(localStorage.getItem("contacts"));
+// }
 
 // Runs when DOM is loaded
 document.addEventListener("DOMContentLoaded", function (event) {
@@ -26,18 +26,29 @@ document.addEventListener("DOMContentLoaded", function (event) {
             document.getElementById("Photo_URL").value,
             document.getElementById("select_type").value
         );
-        contactArray.push(contact);
+        // contactArray.push(contact);
+        
+        $.ajax({
+            url : "/AddContact",
+            type: "POST",
+            data: JSON.stringify(contact),
+            contentType: "application/json; charset=utf-8",
+            success: function (result) {
+                console.log(result);
+                document.location.href = "index.html#display";
+                document.getElementById("name").value = "";
+                document.getElementById("email").value = "";
+                document.getElementById("phone").value = "";
+                document.getElementById("Photo_URL").value = "";
+        
+                //createList();
+                document.location.href = "index.html#display";
+            }
+        });
 
-        document.getElementById("name").value = "";
-        document.getElementById("email").value = "";
-        document.getElementById("phone").value = "";
-        document.getElementById("Photo_URL").value = "";
-
-        createList();
-        document.location.href = "#display";
 
       
-        localStorage.setItem("contacts", JSON.stringify(contactArray));
+        //localStorage.setItem("contacts", JSON.stringify(contactArray));
     });
 
     $(document).on("pagebeforeshow", "#display", function (event) {
@@ -76,19 +87,25 @@ function createList() {
     var myul = document.getElementById("myul");
     myul.innerHTML = "";
 
-    contactArray.forEach(function (element) {
-        var li = document.createElement("li");
-        var link = document.createElement("a");
-        link.innerText = element.name;
-        link.href = "#contact";
-        link.dataset.contactId = element.ID;
-        link.addEventListener("click", function () {
-            displayContactInfo(element);
-        });
+    $.get("/getContact", function(data, status) {
+        contactArray = data;
 
-        li.appendChild(link);
-        myul.appendChild(li);
+        contactArray.forEach(function (element) {
+            var li = document.createElement("li");
+            var link = document.createElement("a");
+            link.innerText = element.name;
+            link.href = "#contact";
+            link.dataset.contactId = element.ID;
+            link.addEventListener("click", function () {
+                displayContactInfo(element);
+            });
+    
+            li.appendChild(link);
+            myul.appendChild(li);
+        });
     });
+
+
  
 }
 
@@ -225,5 +242,5 @@ function deleteContact(contactId) {
     displaySavedContacts();
 
   
-    localStorage.setItem("contacts", JSON.stringify(contactArray));
+    //localStorage.setItem("contacts", JSON.stringify(contactArray));
 }
