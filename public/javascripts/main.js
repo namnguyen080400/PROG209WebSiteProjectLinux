@@ -53,9 +53,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
         console.log("Delete contact button click " + contactId);
         
         $.ajax({
-            url : "/deleteContact",
-            type: "POST",
-            data: JSON.stringify({contactId}),
+            url : "/deleteContact/" + contactId,
+            type: "DELETE",
+            //data: JSON.stringify({contactId}),
             contentType: "application/json; charset=utf-8",
             success: function (result) {
                 console.log("abcd");

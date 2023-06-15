@@ -66,14 +66,25 @@ router.post('/AddContact', function(req, res) {
   res.status(200).json(newContact);
 });
 
-router.post('/deleteContact', function(req, res) {
-  const contact = req.body;
-
-  contactArray = contactArray.filter(function (contact) {
-    return contact.ID !== contact;
-  });
+router.delete('/deleteContact/:ID', (req, res) => {
+  const contactId = req.params.ID;
+  console.log("delete contact on server " + contactArray.length);
+  let index = -1;
+  for (let i = 0; i < contactArray.length; i++) {
+    if (contactArray[i].ID === contactId) {
+      index = i;
+      break;
+    }
+  }
+  if (index !== -1) {
+    contactArray.splice(index, 1);
+    console.log("After delete: " + contactArray.length);
+  }
+  // contactArray = contactArray.filter(function (contact) {
+  //   return contact.ID !== contact;
+  // });
   fileManager.write();
-  res.status(200).json(contact);
+  res.status(200).json(contactId);
 });
 
 module.exports = router;
