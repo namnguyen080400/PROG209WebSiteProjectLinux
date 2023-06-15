@@ -60,9 +60,20 @@ router.get('/getContact', function(req, res) {
 
 router.post('/AddContact', function(req, res) {
   const newContact = req.body;
+  console.log("baaaaa");
   contactArray.push(newContact);
   fileManager.write();
   res.status(200).json(newContact);
+});
+
+router.post('/deleteContact', function(req, res) {
+  const contact = req.body;
+
+  contactArray = contactArray.filter(function (contact) {
+    return contact.ID !== contact;
+  });
+  fileManager.write();
+  res.status(200).json(contact);
 });
 
 module.exports = router;

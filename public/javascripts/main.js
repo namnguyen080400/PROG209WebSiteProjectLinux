@@ -46,9 +46,30 @@ document.addEventListener("DOMContentLoaded", function (event) {
             }
         });
 
+    });
 
-      
-        //localStorage.setItem("contacts", JSON.stringify(contactArray));
+    document.getElementById("deleteContact").addEventListener("click", function () {
+        var contactId = localStorage.getItem('parm');
+        console.log("Delete contact button click " + contactId);
+        
+        $.ajax({
+            url : "/deleteContact",
+            type: "POST",
+            data: JSON.stringify({contactId}),
+            contentType: "application/json; charset=utf-8",
+            success: function (result) {
+                console.log("abcd");
+                document.location.href = "index.html#display";
+                // document.getElementById("name").value = "";
+                // document.getElementById("email").value = "";
+                // document.getElementById("phone").value = "";
+                // document.getElementById("Photo_URL").value = "";
+        
+                //createList();
+                document.location.href = "index.html#display";
+            }
+        });
+
     });
 
     $(document).on("pagebeforeshow", "#display", function (event) {
@@ -74,7 +95,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
     });
 
     $(document).on("pagebeforeshow", "#contact", function (event) {
-        displaySavedContacts();
+        let contactId = localStorage.getItem('parm');
+        console.log("display save " + contactId);
+        displaySavedContacts(contactId);
     });
 
     $(document).on("click", ".delete-button", function () {
@@ -97,7 +120,10 @@ function createList() {
             link.href = "#contact";
             link.dataset.contactId = element.ID;
             link.addEventListener("click", function () {
-                displayContactInfo(element);
+                //displayContactInfo(element);
+                console.log("I am here " + element.ID + " " + element.name);
+                localStorage.setItem("parm", element.ID);
+                document.location.href = "index.html#contact";
             });
     
             li.appendChild(link);
@@ -182,11 +208,8 @@ function displayContactsByType(type) {
 //   }
 
 // ul link can jump to page4 
-function displaySavedContacts() {
+function displaySavedContacts(ID) {
 
-   
-  
-   
     var friendSavedInfo = document.getElementById("friendSavedInfo");
     friendSavedInfo.innerHTML = "";
 
@@ -195,41 +218,44 @@ function displaySavedContacts() {
   
 
     contactArray.forEach(function (contact) {
-        var contactInfo = document.createElement("div");
-        contactInfo.classList.add("saved-contact-info");
+        if (contact.ID ===ID) {
+            var contactInfo = document.createElement("div");
+            contactInfo.classList.add("saved-contact-info");
 
-        var nameHeading = document.createElement("h3");
-        nameHeading.innerText = contact.name;
-        contactInfo.appendChild(nameHeading);
+            var nameHeading = document.createElement("h3");
+            nameHeading.innerText = contact.name;
+            contactInfo.appendChild(nameHeading);
 
-        var emailPara = document.createElement("p");
-        emailPara.innerText = "Email: " + contact.email;
-        contactInfo.appendChild(emailPara);
+            var emailPara = document.createElement("p");
+            emailPara.innerText = "Email: " + contact.email;
+            contactInfo.appendChild(emailPara);
 
-        var phonePara = document.createElement("p");
-        phonePara.innerText = "Phone: " + contact.phoneNumber;
-        contactInfo.appendChild(phonePara);
+            var phonePara = document.createElement("p");
+            phonePara.innerText = "Phone: " + contact.phoneNumber;
+            contactInfo.appendChild(phonePara);
 
-        var photoImg = document.createElement("img");
-        photoImg.src = contact.photoURL;
-        photoImg.alt = contact.name + "'s photo";
-        contactInfo.appendChild(photoImg);
+            var photoImg = document.createElement("img");
+            photoImg.src = contact.photoURL;
+            photoImg.alt = contact.name + "'s photo";
+            contactInfo.appendChild(photoImg);
 
-        var typePara = document.createElement("p");
-        typePara.innerText = "Type: " + contact.type;
-        contactInfo.appendChild(typePara);
+            var typePara = document.createElement("p");
+            typePara.innerText = "Type: " + contact.type;
+            contactInfo.appendChild(typePara);
 
-        var deleteButton = document.createElement("button");
-        deleteButton.innerText = "Delete";
-        deleteButton.classList.add("delete-button");
-        deleteButton.dataset.contactId = contact.ID;
-        contactInfo.appendChild(deleteButton);
+            // var deleteButton = document.createElement("button");
+            // deleteButton.innerText = "Delete";
+            // deleteButton.classList.add("delete-button");
+            // deleteButton.dataset.contactId = contact.ID;
+            // contactInfo.appendChild(deleteButton);
 
-        if (contact.type === "Friend") {
-            friendSavedInfo.appendChild(contactInfo);
-        } else if (contact.type === "Family") {
-            familySavedInfo.appendChild(contactInfo);
+            if (contact.type === "Friend") {
+                friendSavedInfo.appendChild(contactInfo);
+            } else if (contact.type === "Family") {
+                familySavedInfo.appendChild(contactInfo);
+            }
         }
+        
     });
 }
 // page4 able to delete the infor after refreshing or closing 
